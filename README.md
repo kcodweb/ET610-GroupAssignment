@@ -19,10 +19,10 @@ We analyse learner behaviour in two datasets: **OULAD** (32,593 student–module
 
 | ID | Dataset | Hypothesis | Method | Result |
 |---|---|---|---|---|
-| H1 | OULAD | Early clickstream engagement predicts failure/withdrawal better than demographics | Logistic regression & random forest, GroupKFold by student, feature ablation, cut-off sweep | **Supported** — AUC 0.82 vs 0.65 at day 56; 0.78 by day 28 |
-| H2 | OULAD | Missing or submitting the first assessment late predicts failure/withdrawal | χ², adjusted logistic regression, robustness checks | **Supported** — missed: OR 20.6, late: OR 2.2 (fully adjusted) |
-| H3 | Moodle | Engagement before the final evaluation predicts completing it | Logistic regression with confounder control; LR & RF with repeated CV | **Supported for volume** — OR 1.43; apparent warning signs vanish once volume is controlled |
-| H4 | Moodle | Activity is deadline-driven, but the extra activity is assessment, not study | Wilcoxon signed-rank tests within learners | **Supported** — in the evaluation window assessment ×13.9, study ×0.54 |
+| H1 | OULAD | Early behaviour (clicks and assessment) predicts failure/withdrawal better than demographics | Logistic regression & random forest, GroupKFold by student, feature ablation, cut-off sweep | **Supported** — AUC 0.82 vs 0.65 at day 56 (clicks alone 0.77); 0.78 by day 28; 0.80 when trained on earlier runs and tested on 2014J |
+| H2 | OULAD | Missing or submitting the first assessment late predicts failure/withdrawal | χ², adjusted logistic regression, robustness checks (banked marks excluded) | **Supported** — missed: OR 20.6, late: OR 2.2 (fully adjusted) |
+| H3 | Moodle | Engagement before the final evaluation predicts completing it | Logistic regression controlling for volume and assessment track; LR & RF with repeated CV | **Supported for volume** — OR 1.86 (track-controlled); apparent warning signs vanish once volume is controlled |
+| H4 | Moodle | Activity is deadline-driven, but the extra activity is assessment, not study | Wilcoxon signed-rank tests within learners | **Supported** — study falls to ×0.54 in the evaluation window and does not rise beforehand |
 
 ## Repository structure
 
@@ -63,4 +63,5 @@ Run the notebook from the repository root. A full run takes about 5–10 minutes
 
 - **OULAD:** features at cut-off day *c* use only data up to day *c*, and only students still registered at *c* are included; cross-validation folds are grouped by student.
 - **Moodle:** 3,334 truncated User IDs recovered from event descriptions; 37,492 system auto-save events excluded from activity counts; sessions split at 30 minutes of inactivity.
-- **Moodle outcome:** the log has no grades and the course project applied only to some learners, so the outcome is completing all three sections of the end-of-course evaluation (113 of 169 learners).
+- **OULAD banked marks:** 494 first-assessment marks carried over from a previous attempt are excluded from the timeliness analysis (H2).
+- **Moodle outcome:** the log has no grades, so the outcome is completing all three sections of the end-of-course evaluation (113 of 169 learners). Course-project learners mostly sat a different set of sections, so H3 controls for project-track membership and is repeated without project learners.
